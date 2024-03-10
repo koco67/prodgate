@@ -18,7 +18,7 @@ public class ProductListener {
 
     @RabbitListener(queues = "${queue-names.product-service}")
     public String handleRequest(Message message) {
-
+        System.out.print("handle request ");
         final MessageType messageType;
         try {
             messageType = MessageType.valueOf(message.getMessageProperties().getType());
@@ -33,6 +33,8 @@ public class ProductListener {
                     return getProductById(productId);
                 }
                 case GET_ALL_PRODUCTS: {
+                    System.out.print("in case ");
+
                     return getAllProducts();
                 }
                 case DELETE_PRODUCT: {
@@ -91,6 +93,7 @@ public class ProductListener {
     }
 
     private String getAllProducts() {
+        System.out.print("in method get all products ");
         return new Gson().toJson(productService.getAllProducts());
     }
 

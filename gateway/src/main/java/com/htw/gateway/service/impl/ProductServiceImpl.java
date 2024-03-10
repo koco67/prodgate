@@ -3,6 +3,7 @@ package com.htw.gateway.service.impl;
 import com.htw.gateway.entity.DefaultProduct;
 import com.htw.gateway.entity.ProductDto;
 import com.htw.gateway.service.ProductService;
+import com.htw.gateway.error.ErrorResponseException;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -11,7 +12,6 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
 import static com.htw.gateway.entity.MessageType.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -35,6 +35,9 @@ public class ProductServiceImpl implements ProductService{
                 productServiceRoutingKey,
                 message
         );
+        if (receivedMessageIsError(receivedMessage)) {
+                throw new ErrorResponseException("couldn't receive components");
+            }
         return new Gson().fromJson(
                 new String(receivedMessage.getBody(), StandardCharsets.UTF_8),
                 new TypeToken<List<DefaultProduct>>() {
@@ -111,5 +114,10 @@ public class ProductServiceImpl implements ProductService{
 
 
 
-    
+    private boolean receivedMessageIsError(Message receivedMessage) {
+        return receivedMessage == null ||
+                receivedMessage.getBody() == null ||
+                new String(receivedMessage.getBody(), StandardCharsets.UTF_8).equals("errorResponse");
+    }
+
 }
