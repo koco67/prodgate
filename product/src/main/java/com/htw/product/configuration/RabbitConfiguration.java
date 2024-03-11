@@ -15,6 +15,7 @@ import org.springframework.amqp.rabbit.listener.FatalExceptionStrategy;
 import org.springframework.util.ErrorHandler;
 import org.springframework.web.ErrorResponseException;
 
+import com.htw.product.listener.Listener;
 import com.htw.product.service.ProductServiceImpl;
 
 @Configuration
@@ -30,11 +31,15 @@ public class RabbitConfiguration {
     private String productServiceQueueName;
     
     @Bean
+    public Listener rabbitController() {
+        return new Listener();
+    }
+    
+    @Bean
     public DirectExchange directExchange() {
         return new DirectExchange(directXchangeName);
     }
     
-
 
     @Bean
     public ProductServiceImpl productService() {

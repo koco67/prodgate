@@ -11,7 +11,7 @@ import com.htw.product.entity.MessageType;
 import com.htw.product.model.Product;
 import com.htw.product.service.ProductService;
 
-public class ProductListener {
+public class Listener {
 
     @Autowired
     private ProductService productService;
